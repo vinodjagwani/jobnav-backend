@@ -1,0 +1,19 @@
+{
+  "available": true,
+  "currentEmployed": true,
+  "remote": true,
+  "firstName": "testAB",
+  "lastName": "testAB",
+  "mobile": 343534,
+  "email": "testAB@gmail.com",
+  "language": "testAB@gmail.com",
+  "location": "UK",
+  "skills": [
+    "JAVA"
+  ],
+  "workExperience": 2,
+  "positionTitle": "Accountant",
+  "startDate": "2020-12-12",
+  "visaRequiredCurrent": true,
+  "visaRequiredFuture": true
+}

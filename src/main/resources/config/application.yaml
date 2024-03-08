@@ -1,0 +1,165 @@
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME:jobnav-backend}
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    discovery:
+      enabled: false
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/jobnav-db?currentSchema=jobnav
+    username: postgres
+    password: postgres
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    hikari:
+      type: com.zaxxer.hikari.HikariDataSource
+      idleTimeout: 60000
+      minimumIdle: 2
+      maximumPoolSize: 20
+      connectionTimeout: 30000
+      poolName: jobnav_pool
+      connectionTestQuery: SELECT 1
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    generate-ddl: true
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL92Dialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  mail:
+    default-encoding: UTF-8
+    host: email-smtp.us-east-1.amazonaws.com
+    username: AKIAZWDOHP3MP6O67WZO
+    password: BMxAlnM903wNEFU7R3/W5NMATi0jW4vV/iceBcj6Fw9I
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+          starttls:
+            enable: true
+    protocol: smtp
+    test-connection: false
+    mail-from: ianthalfpenny18@gmail.com
+    custom:
+      mail-from: ianthalfpenny18@gmail.com
+      job-applicant-register-email-subject: Successfully Registered with JobNav
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 734100079579-dv0umerjljf14ln511o0ctmu0m73l1jo.apps.googleusercontent.com
+            clientSecret: qEDQwSaLkgW9gfgc4Za5bF-e
+            redirectUri: "https://localhost:4433/jobnav-backend/social/google/login"
+            scope:
+              - email
+              - profile
+          facebook:
+            clientId: 894600017750268
+            clientSecret: 4586a47c4ac6ec6c2ea1a26f9686a1b8
+            redirectUri: "https://localhost:4433/jobnav-backend/social/facebook/login"
+            scope:
+              - email
+              - public_profile
+          linkedin:
+            client-id: 8680bik6wt4zvu
+            client-secret: cQTdpqxp8hQnvbdi
+            client-authentication-method: post
+            authorization-grant-type: authorization_code
+            redirect-uri: "https://localhost:4433/jobnav-backend/social/linkedin/login"
+            scope: r_liteprofile, r_emailaddress
+            client-name: Linkedin
+            response_type: code
+        provider:
+          facebook:
+            authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
+          linkedin:
+            authorizationUri: https://www.linkedin.com/oauth/v2/authorization
+            tokenUri: https://www.linkedin.com/uas/oauth2/accessToken
+            userInfoUri: https://api.linkedin.com/v2/me
+            user-name-attribute: id
+
+management:
+  server:
+    port: 9081
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, info, prometheus, beans
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: diskspace,mail,db
+        liveness:
+          include: diskspace,mail,livenessState,db
+
+logging:
+  level:
+    com:
+      jobnav:
+        api: TRACE
+
+server:
+  port: 4433
+  servlet:
+    contextPath: /jobnav-backend
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: changeit
+    keyStoreType: PKCS12
+    keyAlias: tomcat
+
+logbook:
+  include:
+    - ${server.servlet.context-path}/api/**
+  exclude:
+    - /swagger-ui.html
+  filter.enabled: true
+  format.style: http
+  strategy: default
+  obfuscate:
+    parameters:
+      - access_token
+      - password
+      - token
+app:
+  jwtExpiration: 3600
+  jwtSecret: 1b41cad1461b2293a87ab34343bc517c75bfeb874bdfd32e050a1e09f15914fbc64ae0d5f86acae6e5fdb6729d4f529e08d12d88206e5c5d68ff6fbd7ab6705e7
+  socialJwtTokenUrl: "/api/v1/auth/social-login"
+
+rabbitmq:
+  exchange: javainuse.exchange
+  queue: javainuse.queue
+  routingkey: javainuse.routingkey
+
+info:
+  build:
+    name: @project.name@
+    artifact: @project.artifactId@
+    version: @project.version@
+    groupId: @project.groupId@
+    java:
+      version: @java.version@

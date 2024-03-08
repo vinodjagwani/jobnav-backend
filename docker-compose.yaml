@@ -1,0 +1,25 @@
+version: '3'
+services:
+
+  postgres:
+    build: 
+      context: . 
+      dockerfile: Dockerfile.psql
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=jobnav-db
+    ports:
+      - 5432:5432
+    restart: always
+  spring-service:
+    build: 
+      context: . 
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 8082:8086
+      - 8001:8096
+    restart: always
